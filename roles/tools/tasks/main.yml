@@ -1,0 +1,5 @@
+- name: Install htop
+  apt:
+    name:
+      - htop
+    cache_valid_time: 3600

@@ -1,0 +1,6 @@
+- name: geerlingguy.firewall
+  version: "2.5.0"
+- name: geerlingguy.certbot
+  version: "3.1.0"
+- name: udelarinterior.jitsi_meet
+  version: v4.1.0

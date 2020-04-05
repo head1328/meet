@@ -1,0 +1,39 @@
+---
+- hosts: hqrs1
+  pre_tasks:
+    - name: Verify requirements
+      assert:
+        that: "ansible_version.full is version_compare('2.9.6', '>=')"
+        msg: >
+          "You must update Ansible to at least 2.9.6"
+  vars:
+    ansible_port: "{{ ssh_port | default('22') }}"
+    jitsi_meet_server_name: "{{ server_name }}"
+  remote_user: "{{ admin.user }}"
+  become: yes
+  roles:
+    - apt_upgrade
+    - hostnames
+    - users
+    - ssh
+    - tools
+    - geerlingguy.firewall
+    - role: geerlingguy.certbot
+      certbot_create_if_missing: true
+      certbot_admin_email: "{{ admin.email }}"
+      certbot_certs:
+        - domains:
+          - "{{ jitsi_meet_server_name }}"
+      certbot_create_standalone_stop_services: []
+      # only needed when you have to install certs after was jitsi installed
+      #certbot_create_standalone_stop_services:
+      #  - nginx
+      #  - jitsi-videobridge2
+      certbot_auto_renew: true
+      certbot_auto_renew_user: "root"
+      tags: letsencrypt
+    - role: udelarinterior.jitsi_meet
+      jitsi_meet_configure_firewall: false
+      jitsi_meet_ssl_cert_path: "/etc/letsencrypt/live/{{ jitsi_meet_server_name }}/fullchain.pem"
+      jitsi_meet_ssl_key_path: "/etc/letsencrypt/live/{{ jitsi_meet_server_name }}/privkey.pem"
+      tags: jitsi

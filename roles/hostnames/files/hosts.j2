@@ -1,0 +1,14 @@
+### Hetzner Online GmbH installimage
+# nameserver config
+# IPv4
+127.0.0.1 localhost.localdomain localhost
+46.4.58.236  {{ server_name }} {{ inventory_hostname }}
+#
+# IPv6
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+2a01:4f8:140:2055::2  {{ server_name }} {{ inventory_hostname }}

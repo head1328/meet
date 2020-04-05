@@ -1,0 +1,30 @@
+---
+install_image:
+  path: /root/.oldroot/nfs/install/installimage
+  image: /root/.oldroot/nfs/images/Debian-103-buster-64-minimal.tar.gz
+  raid: no
+  drives: sda
+  use_rescue_ssh_keys: yes
+  partitions: swap:swap:16G,/boot:ext3:512M,/:ext4:all
+firewall_allowed_tcp_ports:
+  - 22
+  - 80
+  - 443
+firewall_allowed_udp_ports:
+  - 10000
+# any FQDN like meet.any-domain.de
+server_name: [required]
+admin:
+  user:
+  email:
+# at least one user is required
+users:
+  - user: [required]
+    # usually starts with 1000
+    uid: [required]
+    # generate with: `docker run -it --rm alpine mkpasswd -m sha-512 [ANY PASSWORD]`
+    password: [required]
+    # your public ssh key
+    authorized_keys: |
+      key1
+      key2

@@ -1,0 +1,20 @@
+---
+- name: Create serveral users
+  user:
+    name: "{{ item.user }}"
+    shell: /bin/bash
+    uid: "{{ item.uid }}"
+    group: users
+    groups: sudo
+    append: true # --> user is not removed from any other group
+    password: "{{ item.password }}"
+  loop: "{{ users }}"
+
+- name: Copy bashrc to home diretories
+  copy:
+    src: bashrc
+    dest: "/home/{{ item.user }}/.bashrc"
+    owner: "{{ item.user }}"
+    group: users
+    mode: 0644
+  loop: "{{ users }}"

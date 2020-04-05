@@ -1,0 +1,8 @@
+---
+- hosts: "{{ target }}"
+  remote_user: root
+  roles:
+    - apt_upgrade
+    - hostnames
+    - users
+    - ssh

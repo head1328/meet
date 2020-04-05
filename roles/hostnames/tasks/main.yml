@@ -1,0 +1,12 @@
+---
+- name: Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Create "/etc/hosts" file
+  template:
+    src: ./files/hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: 0644

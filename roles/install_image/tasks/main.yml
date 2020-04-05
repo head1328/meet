@@ -1,0 +1,32 @@
+---
+- name: Check if "installimage" script exists
+  stat:
+    path: "{{ install_image.path }}"
+  register: stat_result
+
+- block:
+    - name: Abort when "installimage" script doesn't exist
+      debug:
+        msg: "installimage script not found; you have either already installed the image or Hetzner renamed the script. Aborting."
+    - meta: end_play
+  when: stat_result.stat.exists == false
+
+- name: Execute installimage
+  shell: "{{ install_image.path }} -a -n {{ inventory_hostname }} -r {{ install_image.raid }} -i {{ install_image.image }} -p {{ install_image.partitions }} -d {{ install_image.drives }} -t {{ install_image.use_rescue_ssh_keys }}"
+
+- name: Remove the rescue system host key from the known_hosts
+  connection: local
+  shell: "ssh-keygen -R {{ inventory_hostname }}"
+
+- name: Reboot host and stop polling.
+  shell: reboot
+  async: 10 # Do not care for 10 sec
+  poll: 0 # Fire & Forget
+
+- name: Wait for host to finish reboot
+  wait_for:
+    port: "{{ (ansible_port|default(ansible_ssh_port))|default(22) }}"
+    host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+    search_regex: OpenSSH
+    delay: 20  # Do not check for at least 10 sec
+  connection: local
