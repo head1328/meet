@@ -31,6 +31,7 @@
       #  - jitsi-videobridge2
       certbot_auto_renew: true
       certbot_auto_renew_user: "root"
+      certbot_auto_renew_options: "--quiet --no-self-upgrade --pre-hook \"service nginx stop\" --post-hook \"service nginx start\""
       tags: letsencrypt
     - role: udelarinterior.jitsi_meet
       jitsi_meet_configure_firewall: false
